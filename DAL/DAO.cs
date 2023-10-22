@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using SE1735_Group6_A2.DTL;
 using System;
 using System.Collections;
@@ -7,6 +8,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,18 +16,47 @@ namespace SE1735_Group6_A2.DAL
 {
     public class DAO
     {
-        private static readonly string connectionString = "Data Source=TOAN;Initial Catalog=Cinema;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
         private DataSet _dataSet;
         public DAO()
         {
             _dataSet = new DataSet();
             LoadData();
         }
+        public bool Login(string username, string password)
+        {
+            try
+            {
+                IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+                string adminUsername = configuration["AdminAccount:Username"];
+                string adminPassword = configuration["AdminAccount:Password"];
+                if (username == adminUsername && password == adminPassword)
+                {
+                    AppSettings.IsLoggedIn = true;
+                    return true;
+                }
+            }
+            catch (JsonException ex)
+            {
+                MessageBox.Show("Error deserializing JSON: " + ex.Message);
+            }
+
+            return false;
+        }
+        public void Logout()
+        {
+            AppSettings.IsLoggedIn = false;
+        }
+
+        public bool checkLogin()
+        {
+            return AppSettings.IsLoggedIn;
+        }
 
         private void LoadData()
         {
             // Create object connection
-            SqlConnection conn = new SqlConnection(connectionString);
+            SqlConnection conn = new SqlConnection(AppSettings.ConnectionString);
 
             // Create object Command
             SqlCommand cmd = new SqlCommand("SELECT * FROM Shows; SELECT * FROM Films; SELECT * FROM Rooms; SELECT * FROM Genres", conn);
@@ -40,7 +71,7 @@ namespace SE1735_Group6_A2.DAL
         {
             string query = "INSERT INTO Shows VALUES (@roomID, @filmID, @showDate, @price, @status, @slot)";
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
             using (SqlCommand insertCommand = new SqlCommand(query, conn))
             {
                 insertCommand.Parameters.AddWithValue("@roomID", show.RoomID);
@@ -59,7 +90,7 @@ namespace SE1735_Group6_A2.DAL
         public void UpdateShow(Show show)
         {
             string query = "UPDATE Shows SET RoomID = @RoomID, FilmID = @FilmID, ShowDate = @ShowDate, Price = @Price, Slot = @Slot WHERE ShowID = @ShowID";
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
             using (SqlCommand updateCommand = new SqlCommand(query, conn))
             {
                 updateCommand.Parameters.AddWithValue("@ShowID", show.ShowID);
@@ -81,7 +112,7 @@ namespace SE1735_Group6_A2.DAL
             {
                 string query = "DELETE FROM Shows WHERE ShowID = @ShowID";
 
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 using (SqlCommand deleteCommand = new SqlCommand(query, conn))
                 {
                     deleteCommand.Parameters.AddWithValue("@ShowID", showId);
@@ -101,7 +132,7 @@ namespace SE1735_Group6_A2.DAL
         {
             DataTable showsTable = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -115,12 +146,28 @@ namespace SE1735_Group6_A2.DAL
 
             return showsTable;
         }
+        public void AddBooking(Booking booking)
+        {
+            string query = "INSERT INTO Bookings VALUES (@ShowID, @Name, @SeatStatus, @Amount)";
 
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+            using (SqlCommand insertCommand = new SqlCommand(query, conn))
+            {
+                insertCommand.Parameters.AddWithValue("@ShowID", booking.ShowID);
+                insertCommand.Parameters.AddWithValue("@Name", booking.Name);
+                insertCommand.Parameters.AddWithValue("@SeatStatus", booking.SeatStatus);
+                insertCommand.Parameters.AddWithValue("@Amount", booking.Amount);
+
+                conn.Open();
+                insertCommand.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
         public Show GetShowById(int showID)
         {
             Show show = null;
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -156,7 +203,7 @@ namespace SE1735_Group6_A2.DAL
         {
             DataTable showsTable = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -177,13 +224,108 @@ namespace SE1735_Group6_A2.DAL
 
             return showsTable;
         }
+        public DataTable GetAllBooking()
+        {
+            DataTable showsTable = new DataTable();
 
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT * FROM Bookings";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                {
+                    adapter.Fill(showsTable);
+                }
+            }
+
+            return showsTable;
+        }
+        public DataTable GetAllBookingByShowId(int showId)
+        {
+            DataTable bookingsTable = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT * FROM Bookings WHERE ShowID = @ShowID";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ShowID", showId);
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                    {
+                        adapter.Fill(bookingsTable);
+                    }
+                }
+
+            }
+
+            return bookingsTable;
+        }
+
+        public Booking GetBookingById(int id)
+        {
+            Booking booking = null;
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT * FROM Bookings WHERE BookingID = @BookingID";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@BookingID", id);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            booking = new Booking
+                            {
+                                ShowID = Convert.ToInt32(reader["ShowID"]),
+                                BookingID = Convert.ToInt32(reader["BookingID"]),
+                                Name = Convert.ToString(reader["Name"]),
+                                SeatStatus = Convert.ToString(reader["SeatStatus"]),
+                                Amount = Convert.ToInt32(reader["Amount"]),
+                            };
+                        }
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return booking;
+        }
+
+        public void DeleteBooking(int bookingId)
+        {
+            try
+            {
+                string query = "DELETE FROM Bookings WHERE BookingID = @BookingID";
+
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+                using (SqlCommand deleteCommand = new SqlCommand(query, conn))
+                {
+                    deleteCommand.Parameters.AddWithValue("@BookingID", bookingId);
+
+                    conn.Open();
+                    int rowsAffected = deleteCommand.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
 
         public DataTable GetAllFilms()
         {
             DataTable filmsTable = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -203,7 +345,7 @@ namespace SE1735_Group6_A2.DAL
         {
             DataTable roomsTable = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -223,7 +365,7 @@ namespace SE1735_Group6_A2.DAL
         {
             DataTable shoesTable = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
             {
                 connection.Open();
 

@@ -1,6 +1,5 @@
 ﻿using SE1735_Group6_A2.DAL;
 using SE1735_Group6_A2.DTL;
-using SE1735_Group6_A2.Repository;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +18,6 @@ namespace SE1735_Group6_A2.GUI
     {
         private Show show = null;
         private DAO _dao = new DAO();
-        private AccountRepository _accountRepository = new AccountRepository();
 
         public ShowAddEditGUI()
         {

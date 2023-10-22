@@ -1,5 +1,5 @@
-﻿using SE1735_Group6_A2.Repository;
-using System;
+﻿using SE1735_Group6_A2.DAL;
+using SE1735_Group6_A2.DTL;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,18 +13,18 @@ namespace SE1735_Group6_A2.GUI
 {
     public partial class MainGUI : Form
     {
-        private AccountRepository _accountRepository;
+        private DAO _dao;
         public MainGUI()
         {
             InitializeComponent();
-            _accountRepository = new AccountRepository();
+            _dao = new DAO();
         }
 
         private void loginToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_accountRepository.checkLogin())
+            if (AppSettings.IsLoggedIn)
             {
-                _accountRepository.Logout();
+                _dao.Logout();
                 MessageBox.Show("You are logged out!");
             }
             else

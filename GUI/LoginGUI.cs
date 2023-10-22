@@ -1,4 +1,5 @@
-﻿using SE1735_Group6_A2.Repository;
+﻿using SE1735_Group6_A2.DAL;
+using SE1735_Group6_A2.DTL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,18 +14,18 @@ namespace SE1735_Group6_A2.GUI
 {
     public partial class LoginGUI : Form
     {
-        private AccountRepository _accountRepository;
+        private DAO _dao;
         public LoginGUI()
         {
             InitializeComponent();
-            _accountRepository = new AccountRepository();
+            _dao = new DAO();
         }
 
         private void loginButton_Click(object sender, EventArgs e)
         {
-            _accountRepository.Login(usernameTextBox.Text, passwordTextBox.Text);
+            _dao.Login(usernameTextBox.Text, passwordTextBox.Text);
 
-            if (_accountRepository.checkLogin())
+            if (AppSettings.IsLoggedIn)
             {
                 MessageBox.Show("You are logged in as administrator!");
                 this.Close();

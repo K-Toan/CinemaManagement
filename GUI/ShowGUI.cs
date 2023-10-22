@@ -1,6 +1,6 @@
-﻿using SE1735_Group6_A2.DAL;
+﻿using SE1735_Group4_A2.GUI;
+using SE1735_Group6_A2.DAL;
 using SE1735_Group6_A2.DTL;
-using SE1735_Group6_A2.Repository;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +16,6 @@ namespace SE1735_Group6_A2.GUI
     public partial class ShowGUI : Form
     {
         private DAO _dao = new DAO();
-        private AccountRepository _accountRepository = new AccountRepository();
 
         public ShowGUI()
         {
@@ -27,10 +26,12 @@ namespace SE1735_Group6_A2.GUI
 
         private void RefreshDataGridView()
         {
+            dataGridView.AllowUserToAddRows = false;
             dataGridView.Columns.Clear();
             LoadDataIntoDataGridView();
             AddBookingColumnsIntoDataGridView();
-            AddManagementColumnsIntoDataGridView();
+            if(AppSettings.IsLoggedIn)
+                AddManagementColumnsIntoDataGridView();
         }
 
         private void LoadDataIntoComboBox()
@@ -93,7 +94,8 @@ namespace SE1735_Group6_A2.GUI
                 if (dataGridView.Columns[e.ColumnIndex].HeaderText == "Booking")
                 {
                     int showId = Convert.ToInt32(dataGridView.Rows[e.RowIndex].Cells["ShowID"].Value);
-                    MessageBox.Show(showId.ToString());
+                    BookingGUI booking = new BookingGUI(showId);
+                    booking.ShowDialog();
                 }
                 else if (dataGridView.Columns[e.ColumnIndex].HeaderText == "Edit")
                 {
@@ -124,16 +126,19 @@ namespace SE1735_Group6_A2.GUI
 
         private void loginToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_accountRepository.checkLogin())
+            if (AppSettings.IsLoggedIn)
             {
-                _accountRepository.Logout();
+                _dao.Logout();
                 MessageBox.Show("You are logged out!");
+                loginToolStripMenuItem.Text = "Login";
             }
             else
             {
                 LoginGUI loginForm = new LoginGUI();
                 loginForm.ShowDialog();
+                loginToolStripMenuItem.Text = "Logout (admin)";
             }
+            RefreshDataGridView();
         }
 
         private void searchButton_Click(object sender, EventArgs e)
