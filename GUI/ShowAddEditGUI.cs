@@ -61,12 +61,7 @@ namespace SE1735_Group6_A2.GUI
             filmComboBox.ValueMember = "FilmID";
 
             // Slot
-            slotComboBox.Items.Clear();
-
-            for (int i = 1; i <= 9; i++)
-                slotComboBox.Items.Add(i);
-
-            slotComboBox.SelectedIndex = 0;
+            ReloadComboBoxSlot();
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -127,11 +122,10 @@ namespace SE1735_Group6_A2.GUI
             }
             else
             {
-
                 for (int i = 1; i < 10; i++)
                 {
                     int RoomID = Convert.ToInt32(roomComboBox.SelectedValue);
-                    if (_dao.CheckAvailableSlot(RoomID, selectedDate.ToShortDateString(), i))
+                    if (_dao.CheckAvailableSlot(RoomID, dateTimePicker.Value.ToShortDateString(), i))
                     {
                         slotComboBox.Items.Add(i);
                     }

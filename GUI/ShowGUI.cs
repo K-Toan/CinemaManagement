@@ -32,7 +32,9 @@ namespace SE1735_Group6_A2.GUI
             LoadDataIntoDataGridView();
             AddBookingColumnsIntoDataGridView();
             if (AppSettings.IsLoggedIn)
+            {
                 AddManagementColumnsIntoDataGridView();
+            }
         }
 
         private void LoadDataIntoComboBox()
@@ -133,15 +135,16 @@ namespace SE1735_Group6_A2.GUI
             {
                 _dao.Logout();
                 MessageBox.Show("You are logged out!");
+                ShowAllItems();
             }
             else
             {
                 LoginGUI loginForm = new LoginGUI();
                 loginForm.ShowDialog();
+                ShowAllItems();
             }
             if (AppSettings.IsLoggedIn)
             {
-                addNewButton.Visible = true;
                 loginToolStripMenuItem.Text = "Logout (admin)";
             }
             else
@@ -184,7 +187,7 @@ namespace SE1735_Group6_A2.GUI
             dataGridView.Visible = false;
         }
 
-        private void showToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ShowAllItems()
         {
             filmLabel.Visible = true;
             dateLabel.Visible = true;
@@ -194,10 +197,20 @@ namespace SE1735_Group6_A2.GUI
             dateTimePicker.Visible = true;
             roomComboBox.Visible = true;
 
+            if (AppSettings.IsLoggedIn)
+                addNewButton.Visible = true;
+            else
+                addNewButton.Visible = false;
+
             searchButton.Visible = true;
             numberOfShowsLabel.Visible = true;
 
             dataGridView.Visible = true;
+        }
+
+        private void showToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowAllItems();
         }
     }
 }
