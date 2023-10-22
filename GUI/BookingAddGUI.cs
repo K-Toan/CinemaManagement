@@ -108,8 +108,7 @@ namespace SE1735_Group4_A2.GUI
                         else
                         {
                             tbAmount.Text = Convert.ToString(
-                                Convert.ToInt16(tbAmount.Text.Split(".")[0]) + show.Price
-                                ) + ".0000";
+                                Convert.ToInt16(tbAmount.Text.Split(".")[0]) + show.Price) + ".0000";
                         }
                     }
                     else
@@ -122,8 +121,7 @@ namespace SE1735_Group4_A2.GUI
                         else
                         {
                             tbAmount.Text = Convert.ToString(
-                                Convert.ToInt16(tbAmount.Text.Split(".")[0]) - show.Price
-                                ) + ".0000";
+                                Convert.ToInt16(tbAmount.Text.Split(".")[0]) - show.Price) + ".0000";
                         }
                     }
                 };
@@ -135,7 +133,7 @@ namespace SE1735_Group4_A2.GUI
             Booking booking = new Booking();
             Show show = _dao.GetShowById(_showId);
 
-
+            // Get Data
             string[] choices = seatBookingChoice;
             string seatStatus = "";
             int count = 0;
@@ -152,9 +150,18 @@ namespace SE1735_Group4_A2.GUI
             booking.SeatStatus = seatStatus;
             booking.Amount = Convert.ToInt32(count * show.Price);
             booking.ShowID = show.ShowID;
-            _dao.AddBooking(booking);
-            OnBookingAdded();
-            Close();
+
+            // Validate
+            if(booking.Name.IsNullOrEmpty())
+            {
+                MessageBox.Show("Please enter name");
+            }
+            else
+            {
+                _dao.AddBooking(booking);
+                OnBookingAdded();
+                Close();
+            }
         }
 
 
