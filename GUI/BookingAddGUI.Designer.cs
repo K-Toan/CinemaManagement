@@ -52,7 +52,7 @@
             tlpSeat.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
             tlpSeat.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
             tlpSeat.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
-            tlpSeat.Location = new Point(199, 9);
+            tlpSeat.Location = new Point(155, 9);
             tlpSeat.Margin = new Padding(3, 2, 3, 2);
             tlpSeat.Name = "tlpSeat";
             tlpSeat.RowCount = 10;
@@ -79,7 +79,7 @@
             tableLayoutPanel1.Controls.Add(tbAmount, 2, 1);
             tableLayoutPanel1.Controls.Add(lblAmount, 0, 1);
             tableLayoutPanel1.Controls.Add(lblName, 0, 0);
-            tableLayoutPanel1.Location = new Point(61, 220);
+            tableLayoutPanel1.Location = new Point(102, 211);
             tableLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 2;
@@ -128,7 +128,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(190, 336);
+            btnSave.Location = new Point(147, 295);
             btnSave.Margin = new Padding(3, 2, 3, 2);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(92, 32);
@@ -139,7 +139,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(336, 336);
+            btnCancel.Location = new Point(293, 295);
             btnCancel.Margin = new Padding(3, 2, 3, 2);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(97, 32);
@@ -152,7 +152,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(613, 409);
+            ClientSize = new Size(550, 338);
             Controls.Add(btnCancel);
             Controls.Add(btnSave);
             Controls.Add(tableLayoutPanel1);

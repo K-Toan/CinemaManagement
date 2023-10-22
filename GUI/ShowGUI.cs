@@ -139,7 +139,7 @@ namespace SE1735_Group6_A2.GUI
                 LoginGUI loginForm = new LoginGUI();
                 loginForm.ShowDialog();
             }
-            if(AppSettings.IsLoggedIn)
+            if (AppSettings.IsLoggedIn)
             {
                 addNewButton.Visible = true;
                 loginToolStripMenuItem.Text = "Logout (admin)";

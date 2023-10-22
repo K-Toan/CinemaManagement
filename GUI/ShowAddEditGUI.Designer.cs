@@ -89,14 +89,17 @@
             // 
             // roomComboBox
             // 
+            roomComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             roomComboBox.FormattingEnabled = true;
             roomComboBox.Location = new Point(341, 71);
             roomComboBox.Name = "roomComboBox";
             roomComboBox.Size = new Size(121, 23);
             roomComboBox.TabIndex = 1;
+            roomComboBox.Leave += cboRoom_Leave;
             // 
             // slotComboBox
             // 
+            slotComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             slotComboBox.FormattingEnabled = true;
             slotComboBox.Location = new Point(341, 151);
             slotComboBox.Name = "slotComboBox";
@@ -105,6 +108,7 @@
             // 
             // filmComboBox
             // 
+            filmComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             filmComboBox.FormattingEnabled = true;
             filmComboBox.Location = new Point(341, 191);
             filmComboBox.Name = "filmComboBox";
@@ -146,6 +150,7 @@
             dateTimePicker.Name = "dateTimePicker";
             dateTimePicker.Size = new Size(121, 23);
             dateTimePicker.TabIndex = 2;
+            dateTimePicker.ValueChanged += date_ValueChanged;
             // 
             // ShowAddEditGUI
             // 

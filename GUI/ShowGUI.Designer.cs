@@ -125,6 +125,7 @@
             // 
             // filmComboBox
             // 
+            filmComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             filmComboBox.FormattingEnabled = true;
             filmComboBox.Location = new Point(154, 53);
             filmComboBox.Name = "filmComboBox";
@@ -133,6 +134,7 @@
             // 
             // roomComboBox
             // 
+            roomComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             roomComboBox.FormattingEnabled = true;
             roomComboBox.Location = new Point(154, 156);
             roomComboBox.Name = "roomComboBox";
@@ -175,7 +177,7 @@
             // 
             // dateTimePicker
             // 
-            dateTimePicker.CustomFormat = "dd/MM/yyyy";
+            dateTimePicker.CustomFormat = "MM/dd/yyyy";
             dateTimePicker.Format = DateTimePickerFormat.Custom;
             dateTimePicker.Location = new Point(154, 105);
             dateTimePicker.Name = "dateTimePicker";

@@ -19,6 +19,7 @@ namespace SE1735_Group6_A2.GUI
         private Show show = null;
         private DAO _dao = new DAO();
 
+        private static DateTime selectedDate;
         public ShowAddEditGUI()
         {
             InitializeComponent();
@@ -105,6 +106,61 @@ namespace SE1735_Group6_A2.GUI
         private void cancelButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+
+        private void ReloadComboBoxSlot()
+        {
+            slotComboBox.Items.Clear();
+
+            if (show != null)
+            {
+                slotComboBox.Items.Add(show.Slot);
+                slotComboBox.SelectedItem = show.Slot;
+                for (int i = 1; i < 10; i++)
+                {
+                    if (_dao.CheckAvailableSlot(show.RoomID, show.ShowDate.ToShortDateString(), i))
+                    {
+                        slotComboBox.Items.Add(i);
+                    }
+                }
+            }
+            else
+            {
+
+                for (int i = 1; i < 10; i++)
+                {
+                    int RoomID = Convert.ToInt32(roomComboBox.SelectedValue);
+                    if (_dao.CheckAvailableSlot(RoomID, selectedDate.ToShortDateString(), i))
+                    {
+                        slotComboBox.Items.Add(i);
+                    }
+                }
+                slotComboBox.SelectedIndex = 0;
+            }
+        }
+
+        private void TextPrice_LostFocus(object sender, EventArgs e)
+        {
+            try
+            {
+                double Price = Convert.ToDouble(priceTextBox.Text);
+                if (Price < 0) throw new Exception();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Price must be a double and > = 0");
+            }
+        }
+        private void cboRoom_Leave(object sender, EventArgs e)
+        {
+            ReloadComboBoxSlot();
+        }
+
+        private void date_ValueChanged(object sender, EventArgs e)
+        {
+            selectedDate = dateTimePicker.Value;
+            ReloadComboBoxSlot();
         }
     }
 }

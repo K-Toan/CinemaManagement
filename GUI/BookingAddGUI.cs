@@ -152,7 +152,7 @@ namespace SE1735_Group4_A2.GUI
             booking.ShowID = show.ShowID;
 
             // Validate
-            if(booking.Name.IsNullOrEmpty())
+            if (booking.Name.IsNullOrEmpty())
             {
                 MessageBox.Show("Please enter name");
             }

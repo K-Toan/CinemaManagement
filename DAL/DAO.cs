@@ -199,6 +199,32 @@ namespace SE1735_Group6_A2.DAL
 
             return show;
         }
+
+        public bool CheckAvailableSlot(int RoomID, string ShowDate, int Slot)
+        {
+
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+            {
+                conn.Open();
+                string query = "select * from Shows where RoomID = @RoomID and slot = @Slot and ShowDate = @ShowDate";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@RoomID", RoomID);
+                    cmd.Parameters.AddWithValue("@Slot", Slot);
+                    cmd.Parameters.AddWithValue("@ShowDate", ShowDate);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
         public DataTable GetShows(int filmId, DateTime showDate, int roomId)
         {
             DataTable showsTable = new DataTable();
