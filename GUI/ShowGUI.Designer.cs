@@ -172,8 +172,8 @@
             // toolStripStatusLabel1
             // 
             toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            toolStripStatusLabel1.Size = new Size(49, 17);
-            toolStripStatusLabel1.Text = "Group 6";
+            toolStripStatusLabel1.Size = new Size(87, 17);
+            toolStripStatusLabel1.Text = "SE1735_Group6";
             // 
             // dateTimePicker
             // 
