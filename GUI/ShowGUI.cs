@@ -20,6 +20,7 @@ namespace SE1735_Group6_A2.GUI
         public ShowGUI()
         {
             InitializeComponent();
+            HideAllItems();
             LoadDataIntoComboBox();
             RefreshDataGridView();
         }
@@ -30,7 +31,7 @@ namespace SE1735_Group6_A2.GUI
             dataGridView.Columns.Clear();
             LoadDataIntoDataGridView();
             AddBookingColumnsIntoDataGridView();
-            if(AppSettings.IsLoggedIn)
+            if (AppSettings.IsLoggedIn)
                 AddManagementColumnsIntoDataGridView();
         }
 
@@ -58,6 +59,8 @@ namespace SE1735_Group6_A2.GUI
 
             dataGridView.Columns["ShowID"].Visible = false;
             dataGridView.Columns["Status"].Visible = false;
+
+            numberOfShowsLabel.Text = "The number of shows:  " + dataGridView.Rows.Count;
         }
 
         private void AddBookingColumnsIntoDataGridView()
@@ -101,7 +104,7 @@ namespace SE1735_Group6_A2.GUI
                 {
                     int showId = Convert.ToInt32(dataGridView.Rows[e.RowIndex].Cells["ShowID"].Value);
                     Show show = _dao.GetShowById(showId);
-                    if(show != null)
+                    if (show != null)
                     {
                         ShowAddEditGUI showAddEditGUI = new ShowAddEditGUI(show);
                         showAddEditGUI.ShowDialog();
@@ -111,7 +114,7 @@ namespace SE1735_Group6_A2.GUI
                 else if (dataGridView.Columns[e.ColumnIndex].HeaderText == "Delete")
                 {
                     int showId = Convert.ToInt32(dataGridView.Rows[e.RowIndex].Cells["ShowID"].Value);
-                    if(MessageBox.Show("Do you want to delete?",  "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (MessageBox.Show("Do you want to delete?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
                         _dao.DeleteShow(showId);
                         RefreshDataGridView();
@@ -130,13 +133,21 @@ namespace SE1735_Group6_A2.GUI
             {
                 _dao.Logout();
                 MessageBox.Show("You are logged out!");
-                loginToolStripMenuItem.Text = "Login";
             }
             else
             {
                 LoginGUI loginForm = new LoginGUI();
                 loginForm.ShowDialog();
+            }
+            if(AppSettings.IsLoggedIn)
+            {
+                addNewButton.Visible = true;
                 loginToolStripMenuItem.Text = "Logout (admin)";
+            }
+            else
+            {
+                addNewButton.Visible = false;
+                loginToolStripMenuItem.Text = "Login";
             }
             RefreshDataGridView();
         }
@@ -154,6 +165,39 @@ namespace SE1735_Group6_A2.GUI
             ShowAddEditGUI showAddEditGUI = new ShowAddEditGUI();
             showAddEditGUI.ShowDialog();
             RefreshDataGridView();
+        }
+
+        private void HideAllItems()
+        {
+            filmLabel.Visible = false;
+            dateLabel.Visible = false;
+            roomLabel.Visible = false;
+
+            filmComboBox.Visible = false;
+            dateTimePicker.Visible = false;
+            roomComboBox.Visible = false;
+
+            searchButton.Visible = false;
+            addNewButton.Visible = false;
+            numberOfShowsLabel.Visible = false;
+
+            dataGridView.Visible = false;
+        }
+
+        private void showToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            filmLabel.Visible = true;
+            dateLabel.Visible = true;
+            roomLabel.Visible = true;
+
+            filmComboBox.Visible = true;
+            dateTimePicker.Visible = true;
+            roomComboBox.Visible = true;
+
+            searchButton.Visible = true;
+            numberOfShowsLabel.Visible = true;
+
+            dataGridView.Visible = true;
         }
     }
 }

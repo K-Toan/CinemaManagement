@@ -24,6 +24,8 @@ namespace SE1735_Group4_A2.GUI
             _booking = booking;
             seatStatusString = _booking.SeatStatus;
             LoadDataToDetail();
+            tbName.Enabled = false;
+            tbAmount.Enabled = false;
         }
 
         public void LoadDataToDetail()
